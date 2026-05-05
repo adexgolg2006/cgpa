@@ -120,6 +120,9 @@ class AdexgoldHandler(http.server.SimpleHTTPRequestHandler):
 if __name__ == '__main__':
     init_db()
     PORT = 8000
-    with socketserver.TCPServer(("", PORT), AdexgoldHandler) as httpd:
-        print(f"Adexgold Server online at http://localhost:{PORT}")
+    import os
+    port = int(os.environ.get("PORT", 8000)) # Uses Render's port or 8000 locally
+    with socketserver.TCPServer(("", port), AdexgoldHandler) as httpd:
+        print(f"Server active at port {port}")
         httpd.serve_forever()
+
