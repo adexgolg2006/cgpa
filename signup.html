@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Adexgold</title>
+    <style>
+        /* Mature Dark Radial Gradient */
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            margin: 0; 
+            height: 100vh; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            background: radial-gradient(circle, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            overflow: hidden;
+        }
+
+        /* Rolling Ghost Text Animation */
+        .rolling-container {
+            width: 100%;
+            overflow: hidden;
+            position: absolute;
+            top: 20px;
+            white-space: nowrap;
+            z-index: 0;
+        }
+
+        .rolling-text {
+            display: inline-block;
+            font-size: 3rem;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.03);
+            text-transform: uppercase;
+            letter-spacing: 10px;
+            animation: roll 20s linear infinite;
+        }
+
+        @keyframes roll {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* Glassmorphism Box - Landscape Style */
+        .box { 
+            background: rgba(0, 0, 0, 0.7); 
+            backdrop-filter: blur(15px);
+            padding: 40px; 
+            border-radius: 15px; 
+            border: 1px solid rgba(16, 185, 129, 0.3); /* Emerald border for Signup */
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5); 
+            width: 750px; 
+            display: flex;
+            flex-direction: row;
+            gap: 30px;
+            z-index: 10;
+        }
+
+        .header-section {
+            flex: 1;
+            color: white;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding-right: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .header-section h2 { font-size: 2.5rem; margin: 0; color: #10b981; }
+        .header-section p { color: #888; line-height: 1.6; }
+
+        /* Two-Column Form Layout */
+        form { 
+            flex: 2; 
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .full-width { grid-column: span 2; }
+
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            border-radius: 6px; 
+            color: white;
+            font-size: 0.9rem;
+            box-sizing: border-box; 
+        }
+
+        input:focus { border-color: #10b981; outline: none; background: rgba(255, 255, 255, 0.1); }
+
+        button { 
+            grid-column: span 2;
+            padding: 14px; 
+            background: #10b981; 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: bold;
+            font-size: 1rem;
+            transition: 0.3s ease;
+            margin-top: 10px;
+        }
+
+        button:hover { background: #059669; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4); }
+
+        .footer-link { grid-column: span 2; color: #888; font-size: 0.85rem; text-align: center; margin-top: 10px; }
+        .footer-link a { color: #fdbb2d; text-decoration: none; font-weight: bold; }
+        .footer-link a:hover { text-decoration: underline; }
+
+    </style>
+</head>
+<body>
+
+    <div class="rolling-container">
+        <div class="rolling-text">CREATE ACCOUNT &bull; ADEXGOLD &bull; ACADEMIC PORTAL &bull; JOIN ADEXGOLD</div>
+    </div>
+
+    <div class="box">
+        <div class="header-section">
+            <h2>Register</h2>
+            <p>Please provide your academic details to set up your Adexgold CGPA Profile.</p>
+        </div>
+
+        <form method="POST" action="/signup">
+            <input name="first_name" placeholder="First Name" required>
+            <input name="last_name" placeholder="Last Name" required>
+            
+            <input name="middle_name" placeholder="Middle Name" class="full-width">
+            
+            <input name="department" placeholder="Department" required class="full-width">
+            <input name="programme" placeholder="Programme (e.g. B.Sc)" required class="full-width">
+            
+            <input name="username" placeholder="Choose Username" required>
+            <input name="password" type="password" placeholder="Create Password" required>
+            
+            <button type="submit">Complete Registration</button>
+            
+            <div class="footer-link">
+                Already have an account? <a href="/login">Login here</a>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>

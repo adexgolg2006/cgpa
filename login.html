@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Adexgold</title>
+    <style>
+        /* Mature Dark Gradient Background */
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            margin: 0; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center; 
+            background: radial-gradient(circle, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            overflow: hidden;
+        }
+
+        /* Rolling Text Animation */
+        .rolling-container {
+            width: 100%;
+            overflow: hidden;
+            position: absolute;
+            top: 20px;
+            white-space: nowrap;
+        }
+
+        .rolling-text {
+            display: inline-block;
+            font-size: 3rem;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.1);
+            text-transform: uppercase;
+            letter-spacing: 10px;
+            animation: roll 15s linear infinite;
+        }
+
+        @keyframes roll {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* Fixed Top Title */
+        .top-title {
+            position: absolute;
+            top: 80px;
+            color: #fdbb2d;
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-shadow: 0 0 15px rgba(253, 187, 45, 0.5);
+            text-transform: uppercase;
+        }
+
+        /* Landscape Oriented Box */
+        .box { 
+            background: rgba(0, 0, 0, 0.8); 
+            padding: 40px; 
+            border-radius: 15px; 
+            border: 1px solid #4f46e5;
+            box-shadow: 0 0 30px rgba(79, 70, 229, 0.3); 
+            width: 600px; /* Wider for Landscape feel */
+            display: flex;
+            flex-direction: row; /* Side by side content */
+            align-items: center;
+            gap: 40px;
+            z-index: 10;
+        }
+
+        .login-header {
+            flex: 1;
+            color: white;
+            border-right: 1px solid #333;
+            padding-right: 20px;
+        }
+
+        form { flex: 1.5; }
+
+        h2 { margin: 0; font-size: 2rem; color: #fff; }
+
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            margin: 10px 0; 
+            background: #111;
+            border: 1px solid #444; 
+            border-radius: 6px; 
+            color: white;
+            box-sizing: border-box; 
+        }
+
+        input:focus { border-color: #fdbb2d; outline: none; }
+
+        button { 
+            width: 100%; 
+            padding: 12px; 
+            background: #4f46e5; 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: bold;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        button:hover { background: #3b31d8; transform: translateY(-2px); }
+
+        p { color: #888; font-size: 0.9rem; text-align: left; }
+        a { color: #fdbb2d; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+    </style>
+</head>
+<body>
+
+    <!-- Moving Background Text -->
+    <div class="rolling-container">
+        <div class="rolling-text">CGPA CALCULATOR &bull; ADEXGOLD &bull; CGPA CALCULATOR &bull; ADEXGOLD</div>
+    </div>
+
+    <div class="top-title">CGPA Calculator</div>
+
+    <div class="box">
+        <div class="login-header">
+            <h2>Login</h2>
+            <p>Enter your credentials to access your academic dashboard.</p>
+        </div>
+
+        <form method="POST">
+            <input name="username" placeholder="Username" required>
+            <input name="password" type="password" placeholder="Password" required>
+            <button type="submit">Access Account</button>
+            <p>New Student? <a href="/signup">Register here</a></p>
+        </form>
+    </div>
+
+</body>
+</html>

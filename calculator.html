@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Dashboard - Adexgold</title>
+    <style>
+        body { 
+            font-family: 'Inter', 'Segoe UI', sans-serif; 
+            margin: 0; min-height: 100vh; 
+            background: radial-gradient(circle at top right, #1a1a2e, #0f0f1a);
+            color: #e0e0e0; display: flex; flex-direction: column; align-items: center; 
+            padding: 100px 20px; overflow-x: hidden;
+        }
+
+        .rolling-container { width: 100%; overflow: hidden; position: fixed; top: 25px; white-space: nowrap; pointer-events: none; }
+        .rolling-text { display: inline-block; font-size: 5rem; font-weight: 900; color: rgba(255, 255, 255, 0.02); text-transform: uppercase; letter-spacing: 15px; animation: roll 30s linear infinite; }
+        @keyframes roll { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+        .brand-top { position: absolute; top: 35px; left: 50px; color: #d4af37; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; font-size: 0.9rem; }
+
+        .dashboard-container { 
+            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(25px);
+            padding: 60px; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.7); width: 95%; max-width: 1100px; z-index: 10;
+        }
+
+        .user-profile { 
+            display: flex; justify-content: space-between; align-items: flex-end;
+            padding-bottom: 35px; margin-bottom: 60px; border-bottom: 1px solid rgba(212, 175, 55, 0.2); 
+        }
+
+        .user-profile h2 { margin: 0; font-size: 2.2rem; color: #fff; letter-spacing: -0.5px; }
+
+        table { width: 100%; border-collapse: separate; border-spacing: 0 18px; margin-bottom: 50px; }
+        th { color: #d4af37; padding: 0 15px 20px 15px; text-align: left; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 3px; }
+        td { padding: 12px 10px; }
+
+        .col-sn { width: 60px; text-align: center; color: #666; font-weight: bold; }
+        input { width: 100%; padding: 18px; background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; color: white; font-size: 1rem; transition: all 0.3s ease; }
+        input:focus { border-color: #d4af37; background: rgba(0, 0, 0, 0.45); transform: translateY(-2px); }
+
+        .btn-group { display: flex; gap: 30px; margin-top: 40px; }
+        .btn { padding: 20px 40px; border: none; border-radius: 16px; cursor: pointer; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem; flex: 1; transition: 0.4s; }
+        .btn-add { background: transparent; border: 1px solid rgba(16, 185, 129, 0.4); color: #10b981; }
+        .btn-calc { background: #d4af37; color: #000; }
+
+        /* --- UPDATED MATURE RESULT AREA --- */
+        .result-display { 
+            margin-top: 80px; 
+            padding: 60px; 
+            background: rgba(0, 0, 0, 0.4); 
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 24px; 
+            text-align: center;
+            position: relative;
+        }
+
+        .result-display p { 
+            color: #d4af37; 
+            font-size: 0.75rem; 
+            letter-spacing: 5px; 
+            text-transform: uppercase; 
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .result-display h3 { 
+            margin: 0; 
+            font-size: 5rem; 
+            color: #fff; 
+            font-weight: 200; /* Ultra-thin modern look */
+            letter-spacing: -2px;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+        }
+
+        .academic-standing {
+            margin-top: 15px;
+            color: #666;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .logout { display: inline-block; margin-top: 60px; color: #555; text-decoration: none; font-size: 0.85rem; letter-spacing: 1px; transition: 0.3s; }
+        .logout:hover { color: #ef4444; }
+    </style>
+</head>
+<body>
+
+    <div class="brand-top">CGPA CALCULATOR ENGINE &bull; ADEXGOLD</div>
+
+    <div class="rolling-container">
+        <div class="rolling-text">ADESOPE &bull; ABDULGAFAR &bull; ABOLORE &bull; CGPA CALCULATOR SYSTEM</div>
+    </div>
+
+    <div class="dashboard-container">
+        <div class="user-profile">
+            <div>
+                <p style="letter-spacing: 3px; font-size: 0.7rem; color: #d4af37; margin-bottom: 15px;">STUDENT PROFILE</p>
+                <h2>{{ first_name }} {{ middle_name }} {{ last_name }}</h2>
+            </div>
+            <div style="text-align: right;">
+                <p style="margin-bottom: 10px;">Programme</p>
+                <span style="color: #fff; font-weight: bold; font-size: 1.1rem;">{{ programme }}</span>
+            </div>
+        </div>
+
+        <form method="POST" action="/calculator">
+            <table id="courseTable">
+                <thead>
+                    <tr>
+                        <th class="col-sn">S/N</th>
+                        <th style="width: 45%;">COURSE TITLE</th>
+                        <th>COURSE CODE</th>
+                        <th>COURSE UNITS</th>
+                        <th>UNIT SCORE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="col-sn">01</td>
+                        <td><input type="text" name="course_title" placeholder="Academic Course Name"></td>
+                        <td><input type="text" name="course_code" placeholder="Course Code"></td>
+                        <td><input type="number" name="unit" placeholder="0"></td>
+                        <td><input type="number" step="0.01" name="grade" placeholder="0.00"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-add" onclick="addRow()">+ ENROLL ADDITIONAL COURSE</button>
+                <button type="submit" class="btn btn-calc">EXECUTE PERFORMANCE CALCULATION</button>
+            </div>
+        </form>
+
+        <!-- Dynamic Result Area -->
+        {{ cgpa_res }}
+
+        <center><a href="/login" class="logout">TERMINATE SECURE SESSION</a></center>
+    </div>
+
+    <script>
+        function addRow() {
+            var tbody = document.querySelector("#courseTable tbody");
+            var rowCount = tbody.rows.length + 1;
+            var formattedCount = rowCount < 10 ? '0' + rowCount : rowCount;
+            var newRow = tbody.insertRow();
+            newRow.innerHTML = `
+                <td class="col-sn" style="padding: 12px 10px;">${formattedCount}</td>
+                <td style="padding: 12px 10px;"><input type="text" name="course_title" placeholder="Academic Subject"></td>
+                <td style="padding: 12px 10px;"><input type="text" name="course_code" placeholder="Course Code"></td>
+                <td style="padding: 12px 10px;"><input type="number" name="unit" placeholder="0"></td>
+                <td style="padding: 12px 10px;"><input type="number" step="0.01" name="grade" placeholder="0.00"></td>
+            `;
+        }
+    </script>
+</body>
+</html>
