@@ -1,19 +1,26 @@
 import http.server
 import socketserver
 import sqlite3
+import os  # Required for Render Deployment
 from urllib.parse import parse_qs
 
-# --- DATABASE INITIALIZATION ---
+# ==========================================
+# 1. DATABASE LAYER
+# ==========================================
 def init_db():
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
     cursor.execute('''CREATE TABLE IF NOT EXISTS users 
-        (id INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT, middle_name TEXT, last_name TEXT, 
-         department TEXT, programme TEXT, username TEXT UNIQUE, password TEXT)''')
+        (id INTEGER PRIMARY KEY AUTOINCREMENT, 
+         first_name TEXT, middle_name TEXT, last_name TEXT, 
+         department TEXT, programme TEXT, 
+         username TEXT UNIQUE, password TEXT)''')
     conn.commit()
     conn.close()
 
-# --- HTML FILE READER ---
+# ==========================================
+# 2. TEMPLATE ENGINE
+# ==========================================
 def get_page(filename, replacements=None):
     try:
         with open(filename, 'r') as f:
@@ -23,9 +30,11 @@ def get_page(filename, replacements=None):
                     content = content.replace(f'{{{{ {key} }}}}', str(value))
             return content
     except FileNotFoundError:
-        return f"<h1>Error: {filename} not found. Please ensure it is in the same folder.</h1>"
+        return f"<h1>Error: {filename} not found.</h1>"
 
-# --- SERVER LOGIC ---
+# ==========================================
+# 3. REQUEST HANDLER
+# ==========================================
 class AdexgoldHandler(http.server.SimpleHTTPRequestHandler):
     
     def do_GET(self):
@@ -48,7 +57,7 @@ class AdexgoldHandler(http.server.SimpleHTTPRequestHandler):
         self.send_header('Content-type', 'text/html')
         self.end_headers()
 
-        # 1. HANDLE SIGNUP
+        # --- REGISTRATION LOGIC ---
         if self.path == '/signup':
             try:
                 conn = sqlite3.connect('database.db')
@@ -59,11 +68,11 @@ class AdexgoldHandler(http.server.SimpleHTTPRequestHandler):
                      post_data.get('password',[''])[0]))
                 conn.commit()
                 conn.close()
-                self.wfile.write(b"<script>alert('Account Verified Successfully!'); window.location='/login';</script>")
-            except Exception as e:
-                self.wfile.write(f"Error: Username already exists. Details: {e}".encode())
+                self.wfile.write(b"<script>alert('Account Verified!'); window.location='/login';</script>")
+            except:
+                self.wfile.write(b"Error: Username taken.")
 
-        # 2. HANDLE LOGIN
+        # --- LOGIN LOGIC ---
         elif self.path == '/login':
             u_in = post_data.get('username', [''])[0]
             p_in = post_data.get('password', [''])[0]
@@ -73,56 +82,66 @@ class AdexgoldHandler(http.server.SimpleHTTPRequestHandler):
             conn.close()
             
             if user:
-                # user[1]=First Name, user[2]=Middle Name user[3]=Last Name, user[5]=Programme
                 data = {
                     'first_name': user[1], 
-                    'middle_name': user[2],
                     'last_name': user[3], 
                     'programme': user[5],
+                    'department': user[4],
                     'cgpa_res': ''
                 }
                 self.wfile.write(get_page('calculator.html', data).encode())
             else:
-                self.wfile.write(b"<script>alert('Invalid Credentials'); window.location='/login';</script>")
+                self.wfile.write(b"Invalid Login.")
 
-        # 3. HANDLE CALCULATION
+        # --- CGPA CALCULATION LOGIC ---
         elif self.path == '/calculator':
-            grades = post_data.get('grade', [])
+            scores = post_data.get('score', [])
             units = post_data.get('unit', [])
             
-            total_pts = 0
-            total_uts = 0
-            for g, u in zip(grades, units):
-                if g and u:
-                    total_pts += float(g) * float(u)
-                    total_uts += float(u)
+            total_points = 0
+            total_units = 0
             
-            cgpa = round(total_pts / total_uts, 2) if total_uts > 0 else 0.00
+            for s, u in zip(scores, units):
+                if s and u:
+                    val_score = float(s)
+                    val_unit = float(u)
+                    
+                    if val_score >= 70: point = 5
+                    elif val_score >= 60: point = 4
+                    elif val_score >= 50: point = 3
+                    elif val_score >= 45: point = 2
+                    elif val_score >= 40: point = 1
+                    else: point = 0
+                    
+                    total_points += (point * val_unit)
+                    total_units += val_unit
             
-            # This is the "Mature Result" HTML we discussed
-            res_box = f'''
+            cgpa = round(total_points / total_units, 2) if total_units > 0 else 0.00
+            
+            res_html = f'''
             <div class="result-display">
                 <p>CONSOLIDATED PERFORMANCE INDEX</p>
-                <h3 class="result-value">{cgpa}</h3>
-                <div class="academic-standing">VERIFIED ACADEMIC RECORD</div>
+                <h3 class="result-value">{cgpa:.2f}</h3>
+                <div class="academic-standing">TOTAL UNITS: {int(total_units)} | TOTAL POINTS: {int(total_points)}</div>
             </div>
             '''
-            # Sending result back to the design
+            
             data = {
-                'first_name': 'STUDENT', 
-                'last_name': 'PROFILE', 
-                'programme': 'CONSOLIDATED REPORT',
-                'cgpa_res': res_box
+                'first_name': 'AUTHENTICATED', 
+                'last_name': 'STUDENT', 
+                'programme': 'OFFICIAL TRANSCRIPT',
+                'department': 'ACADEMIC RECORD',
+                'cgpa_res': res_html
             }
             self.wfile.write(get_page('calculator.html', data).encode())
 
-# --- RUN SERVER ---
+# ==========================================
+# 4. EXECUTION & DEPLOYMENT (RENDER FIX)
+# ==========================================
 if __name__ == '__main__':
     init_db()
-    PORT = 8000
-    import os
-    port = int(os.environ.get("PORT", 8000)) # Uses Render's port or 8000 locally
+    # PORT LOGIC: Tells the app to use Render's dynamic port
+    port = int(os.environ.get("PORT", 8000)) 
     with socketserver.TCPServer(("", port), AdexgoldHandler) as httpd:
-        print(f"Server active at port {port}")
+        print(f"Adexgold Server online at port {port}")
         httpd.serve_forever()
-
