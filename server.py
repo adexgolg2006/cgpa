@@ -83,8 +83,9 @@ class AdexgoldHandler(http.server.SimpleHTTPRequestHandler):
             
             if user:
                 data = {
-                    'first_name': user[1], 
-                    'last_name': user[3], 
+                    'first_name': user[1],
+                    'middle_name': user[2],
+                    'last_name': user[3],
                     'programme': user[5],
                     'department': user[4],
                     'cgpa_res': ''
