@@ -63,7 +63,7 @@
         }
         input:focus { border-color: Goldenrod; background: rgba(0, 0, 0, 0.45); outline: none; }
 
-        .btn-group { display: flex; gap: 20px; margin-top: 20px; }
+        .btn-group { display: flex; gap: 20px; margin-top: 20px; flex-wrap: wrap; }
         .btn { 
             padding: 18px 30px; border: none; border-radius: 14px; cursor: pointer; 
             font-weight: 700; text-transform: uppercase; letter-spacing: 2px; flex: 1; transition: 0.4s; font-size: 0.8rem;
@@ -73,6 +73,9 @@
         
         .btn-calc { background: Goldenrod; color: Black; }
         .btn-calc:hover { background: Gold; transform: translateY(-3px); }
+
+        .btn-print { background: transparent; border: 2px solid #555; color: #bbb; }
+        .btn-print:hover { border-color: White; color: White; }
 
         .result-display { 
             margin-top: 40px; padding: 40px; 
@@ -86,6 +89,27 @@
 
         .logout { display: inline-block; margin-top: 30px; color: Gray; text-decoration: none; transition: 0.3s; font-size: 0.8rem; }
         .logout:hover { color: Crimson; }
+
+        /* PRINT LOGIC - This triggers when the user prints */
+        @media print {
+            body { background: white !important; color: black !important; padding: 20px !important; }
+            .dashboard-container { 
+                background: white !important; color: black !important; 
+                box-shadow: none !important; border: 2px solid #000 !important; 
+                width: 100% !important; max-width: 100% !important; margin: 0 !important;
+            }
+            .brand-top, .rolling-container, .btn-group, .logout { display: none !important; }
+            input { 
+                border: none !important; background: transparent !important; 
+                color: black !important; padding: 0 !important; font-size: 1rem !important;
+            }
+            th { color: black !important; border-bottom: 2px solid black !important; }
+            .user-profile { border-bottom: 2px solid black !important; }
+            .user-profile h2, .user-profile p, .user-profile span { color: black !important; }
+            .result-display { border: 2px solid black !important; background: transparent !important; }
+            .result-display h3, .result-display p { color: black !important; }
+            tr td:first-child { color: black !important; }
+        }
     </style>
 </head>
 <body>
@@ -100,8 +124,7 @@
         <!-- Student Profile Section (DYNAMIC) -->
         <div class="user-profile">
             <div>
-                <p style="letter-spacing: 3px; font-size: 0.65rem; color: Goldenrod; margin-bottom: 10px;">STUDENT PROFILE</p>
-                <!-- These will be filled by the data from signup -->
+                <p style="letter-spacing: 3px; font-size: 0.65rem; color: Goldenrod; margin-bottom: 10px;">STUDENT PERFORMANCE TRANSCRIPT</p>
                 <h2>{{ first_name }} {{ middle_name }} {{ last_name }}</h2>
                 <p style="font-size: 0.8rem; color: Gray; margin: 5px 0;">CUMMULATIVE GRADE POINT AVERAGE</p>
             </div>
@@ -134,6 +157,7 @@
             <div class="btn-group">
                 <button type="button" class="btn btn-add" onclick="addRow()">+ ENROLL ADDITIONAL COURSE</button>
                 <button type="submit" class="btn btn-calc">EXECUTE PERFORMANCE CALCULATION</button>
+                <button type="button" class="btn btn-print" onclick="window.print()">🖨️ PRINT OFFICIAL RESULT</button>
             </div>
         </form>
 
